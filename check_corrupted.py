@@ -56,6 +56,8 @@ def bulk_check_mp3_files(directory_path):
                     print(f"✅ VALID: {file_path}")
                 else:
                     corrupted_count += 1
+                    os.remove(file_path)
+                
                     print(f"❌ CORRUPTED: {file_path} -> {error_message}")
 
     print("\n" + "="*50)
