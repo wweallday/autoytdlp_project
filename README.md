@@ -1,15 +1,138 @@
-YouTube Media Downloader SuiteThis project is a collection of Python scripts designed to automate the process of downloading and managing YouTube audio and video files.Featuresdownload.py: Downloads YouTube videos and converts them to MP3 audio files.downloadmp4.py: Downloads YouTube videos in MP4 format.auto_clipboard.py: Monitors your clipboard for YouTube URLs and automatically logs them to a CSV file.check_corrupted.py: Scans a directory for MP3 files and removes any that are corrupted.RequirementsTo run these scripts, you will need the following installed on your system:Python: The core language for the scripts.FFmpeg: An essential tool for handling the audio/video conversion and recoding.yt-dlp: A powerful command-line program for downloading media from YouTube and many other sites.pyperclip: Required for the clipboard monitoring script (auto_clipboard.py).mutagen: Required for the corrupted file checker (check_corrupted.py).Setup Instructions (Windows)Follow these steps to set up the required tools and Python packages on your Windows machine.1. Install FFmpeg and yt-dlpYou can install ffmpeg and download yt-dlp using the following methods:FFmpeg: Use a package manager like choco (Chocolatey) or winget.# Using Chocolatey
+Perfect 👍 I’ll give you the full `README.md` with **badges**, **project structure**, and everything nicely formatted.
+
+Here’s the complete file:
+
+```markdown
+# 🎬 YouTube Media Downloader Suite
+
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)  
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)  
+[![yt-dlp](https://img.shields.io/badge/yt--dlp-latest-orange.svg)](https://github.com/yt-dlp/yt-dlp)  
+[![FFmpeg](https://img.shields.io/badge/ffmpeg-required-lightgrey.svg)](https://ffmpeg.org/)  
+
+A collection of Python scripts to **download, convert, and manage YouTube media files** (MP3 and MP4).  
+
+---
+
+## ✨ Features
+
+- **`download.py`** – Download YouTube videos and convert them to **MP3 audio files**.  
+- **`downloadmp4.py`** – Download YouTube videos in **MP4 format**.  
+- **`auto_clipboard.py`** – Monitor your clipboard for YouTube URLs and log them to a CSV file automatically.  
+- **`check_corrupted.py`** – Scan a directory for **corrupted MP3 files** and remove them.  
+- **`download_old.py`** – Legacy downloader (uses the yt-dlp **Python package** instead of the standalone binary).  
+
+---
+
+## 🗂 Project Structure
+
+```
+
+YouTube-Media-Downloader-Suite/
+│
+├── download.py             # Download YouTube videos as MP3
+├── downloadmp4.py          # Download YouTube videos as MP4
+├── auto\_clipboard.py       # Monitor clipboard for YouTube links
+├── check\_corrupted.py      # Remove corrupted MP3 files
+├── download\_old.py         # Legacy script (Python yt-dlp package)
+├── urls.csv                # Example CSV file (timestamp, url)
+├── README.md               # Project documentation
+
+````
+
+---
+
+## 📦 Requirements
+
+Make sure you have the following installed:
+
+- [Python 3.8+](https://www.python.org/downloads/)  
+- [FFmpeg](https://ffmpeg.org/download.html) – For audio/video conversion  
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp) – For downloading media  
+- [pyperclip](https://pypi.org/project/pyperclip/) – For clipboard monitoring (`auto_clipboard.py`)  
+- [mutagen](https://pypi.org/project/mutagen/) – For corrupted file detection (`check_corrupted.py`)  
+
+---
+
+## ⚙️ Setup Instructions (Windows)
+
+### 1. Install FFmpeg and yt-dlp
+
+Install **FFmpeg** using a package manager:
+
+```sh
+# Using Chocolatey
 choco install ffmpeg
 
-# Using winget
+# Using Winget
 winget install "FFmpeg (Essentials Build)"
-yt-dlp: Download the latest yt-dlp.exe from the official yt-dlp GitHub releases page and place it in a location where your scripts can easily access it.2. Install Python PackagesInstall the necessary Python libraries using pip:pip install pyperclip
-pip install mutagen
-UsageEach script is designed for a specific task. Here is how to use them.Download Audio and VideoThe download.py and downloadmp4.py scripts read URLs from a CSV file. The file should have a header row and columns for a timestamp and the URL.# To download MP3s
+````
+
+Then download **yt-dlp.exe** from the [official releases page](https://github.com/yt-dlp/yt-dlp/releases) and place it in a folder accessible to your scripts.
+
+---
+
+### 2. Install Python Packages
+
+Install required dependencies with pip:
+
+```sh
+pip install pyperclip mutagen
+```
+
+---
+
+## 🚀 Usage
+
+### Download Audio and Video
+
+Both `download.py` and `downloadmp4.py` read URLs from a **CSV file**.
+The file must have a **header row** with a `timestamp` column and a `url` column.
+
+```sh
+# Download MP3 files
 python download.py <path_to_urls_file.csv>
 
-# To download MP4s
+# Download MP4 files
 python downloadmp4.py <path_to_urls_file.csv>
-Note: The scripts will update the CSV file as each download is completed, marking it so it won't be downloaded again on subsequent runs.Monitor ClipboardThe auto_clipboard.py script runs in the background and automatically logs any valid YouTube URLs you copy.python auto_clipboard.py
-Check for Corrupted FilesThe check_corrupted.py script scans a specified directory for MP3 files and removes any that are damaged.python check_corrupted.py <path_to_directory>
-Legacy ProjectThe download_old.py file was part of a previous version of this project that used the yt-dlp Python package. The current approach using the standalone yt-dlp executable is generally recommended for simplicity and ease of use.
+```
+
+> ✅ The script will **update the CSV file** as each download completes, ensuring the same video won’t be downloaded twice.
+
+---
+
+### Monitor Clipboard
+
+Automatically log copied YouTube URLs to a CSV file:
+
+```sh
+python auto_clipboard.py
+```
+
+---
+
+### Check for Corrupted Files
+
+Scan a directory for corrupted MP3s and remove them:
+
+```sh
+python check_corrupted.py <path_to_directory>
+```
+
+---
+
+## 🗂 Legacy Script
+
+The **`download_old.py`** script belongs to an earlier version of this project.
+It uses the **yt-dlp Python library**, but the standalone `yt-dlp.exe` approach is **recommended** for simplicity.
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+Please review YouTube’s [Terms of Service](https://www.youtube.com/t/terms) before downloading content.
+
+---
+
+
