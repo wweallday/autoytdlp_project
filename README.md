@@ -1,8 +1,4 @@
-Perfect 👍 I’ll give you the full `README.md` with **badges**, **project structure**, and everything nicely formatted.
 
-Here’s the complete file:
-
-```markdown
 # 🎬 YouTube Media Downloader Suite
 
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)  
@@ -26,7 +22,7 @@ A collection of Python scripts to **download, convert, and manage YouTube media 
 
 ## 🗂 Project Structure
 
-```
+
 
 YouTube-Media-Downloader-Suite/
 │
@@ -38,7 +34,7 @@ YouTube-Media-Downloader-Suite/
 ├── urls.csv                # Example CSV file (timestamp, url)
 ├── README.md               # Project documentation
 
-````
+
 
 ---
 
