@@ -29,8 +29,8 @@ def is_valid_url(text):
 
 def log_url_to_csv(url):
     """
-    Appends a URL to a CSV file. It creates the file and writes headers if it
-    doesn't exist.
+    Appends a URL and an empty title to a CSV file. It creates the file 
+    and writes headers if it doesn't exist.
 
     Args:
         url (str): The URL to log.
@@ -39,8 +39,10 @@ def log_url_to_csv(url):
     with open(LOG_FILE_NAME, 'a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         if not file_exists:
-            writer.writerow(['Timestamp', 'URL'])  # Write headers if the file is new
-        writer.writerow([time.strftime("%Y-%m-%d %H:%M:%S"), url])
+            # Write new headers if the file is new
+            writer.writerow(['Timestamp', 'URL', 'Title'])
+        # Write the new row with an empty string for the title
+        writer.writerow([time.strftime("%Y-%m-%d %H:%M:%S"), url, ''])
 
 def monitor_clipboard(history_size=5):
     """
@@ -102,4 +104,3 @@ def monitor_clipboard(history_size=5):
 
 if __name__ == "__main__":
     monitor_clipboard()
-

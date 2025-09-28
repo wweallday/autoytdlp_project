@@ -9,8 +9,8 @@ YT_DLP_PATH = r"E:\3uToolsV3\Programdate\yt-dlp.exe"
 # --- Main Script ---
 def download_mp3_from_urls():
     """
-    Reads a list of URLs from a CSV file, downloads audio as MP3s,
-    and updates the CSV to mark completed downloads.
+    Reads URLs from a CSV, downloads audio as MP3s, gets the video title,
+    and updates the CSV to mark completed downloads and add the title.
     """
     if len(sys.argv) < 2:
         print("Error: No input file specified.")
@@ -29,28 +29,37 @@ def download_mp3_from_urls():
         print("Please ensure the file exists at the specified path.")
         return
 
-    # Read all rows from the CSV file
+    # Read all rows and header from the CSV file
     data = []
+    header = []
     try:
         with open(urls_file, 'r', newline='', encoding='utf-8') as f:
             reader = csv.reader(f)
             header = next(reader)
+            # Make script backward-compatible with old 2-column CSV
+            if 'Title' not in header:
+                header.append('Title')
+            
             data = [row for row in reader]
+            # Pad rows that have fewer than 3 columns
+            for row in data:
+                while len(row) < 3:
+                    row.append('')
+    except (StopIteration, FileNotFoundError): # Handles empty or non-existent file
+        print(f"The file '{urls_file}' is empty or not found. Please check it.")
+        return
     except csv.Error as e:
         print(f"Error reading CSV file {urls_file}: {e}")
         return
-    except FileNotFoundError:
-        print(f"Error: The file '{urls_file}' was not found.")
-        return
 
     if not data:
-        print(f"The '{urls_file}' file is empty or contains no URLs. Please add some URLs to it.")
+        print(f"The '{urls_file}' file contains no URLs. Please add some URLs to it.")
         return
 
     print("Starting bulk download of YouTube audio as MP3...")
     print("-" * 40)
 
-    base_command = [
+    base_download_command = [
         YT_DLP_PATH,
         "-x",
         "--audio-format", "mp3"
@@ -64,45 +73,51 @@ def download_mp3_from_urls():
             print(f"[{i + 1}/{len(data)}] Skipping: {url} (already downloaded)")
             continue
 
-        print(f"[{i + 1}/{len(data)}] Downloading: {url}")
+        print(f"[{i + 1}/{len(data)}] Processing: {url}")
         
-        full_command = base_command + [url]
-        download_successful = False
-
+        # 1. Get the video title first
+        video_title = "Title not found"
         try:
-            process = subprocess.Popen(
-                full_command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
+            get_title_command = [YT_DLP_PATH, "--print", "%(title)s", url]
+            title_process = subprocess.run(
+                get_title_command,
+                capture_output=True,
                 text=True,
-                encoding='latin-1'
+                encoding='utf-8',
+                check=True
             )
+            video_title = title_process.stdout.strip()
+            print(f"Found Title: {video_title}")
+        except subprocess.CalledProcessError:
+            print(f"Warning: Could not fetch title for {url}. It may be private or deleted.")
+        except Exception as e:
+            print(f"An unexpected error occurred while fetching title: {e}")
 
-            for line in process.stdout:
-                print(line, end='')
-
-            return_code = process.wait()
-            if return_code == 0:
-                print(f"Successfully downloaded audio from {url}.")
-                download_successful = True
-            else:
-                download_successful = True
-                print(f"An error occurred while downloading {url}.")
-                print(f"yt-dlp exited with code {return_code}.")
-        
+        # 2. Download the audio
+        print(f"Now Downloading: {url}")
+        full_command = base_download_command + [url]
+        download_successful = False
+        try:
+            # Using subprocess.run for simpler execution and error handling
+            result = subprocess.run(full_command, check=True, capture_output=True, text=True, encoding='latin-1')
+            print(result.stdout) # Print yt-dlp output
+            print(f"Successfully downloaded audio from {url}.")
+            download_successful = True
+        except subprocess.CalledProcessError as e:
+            print(f"An error occurred while downloading {url}.")
+            print(f"yt-dlp exited with code {e.returncode}.")
+            print(f"Output:\n{e.stdout}\n{e.stderr}")
         except FileNotFoundError:
             print(f"Error: The yt-dlp executable was not found at '{YT_DLP_PATH}'.")
             break
         except Exception as e:
-            download_successful = True
-            print(f"An unexpected error occurred: {e}")
-            break
+            print(f"An unexpected error occurred during download: {e}")
 
-        # If the download was successful, update the timestamp in the data list
+        # 3. If successful, update the data in memory and write back to the CSV
         if download_successful:
-            data[i][0] = '1'
+            data[i][0] = '1'  # Mark as downloaded
+            data[i][2] = video_title  # Add the title
             
-            # Write the updated data back to the CSV file
             try:
                 with open(urls_file, 'w', newline='', encoding='utf-8') as f:
                     writer = csv.writer(f)
